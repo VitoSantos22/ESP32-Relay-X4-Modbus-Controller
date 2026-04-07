@@ -17,7 +17,7 @@ This project provides a lightweight and reliable Modbus slave implementation for
 
 Tested on:
 
-* ESP32 Relay X4 Modbus board (v1.3)
+* ESP32 Relay X4 Modbus board (v1.3) https://it.aliexpress.com/item/1005010277681749.html
 * USB-C (CH340)
 * RS485 onboard transceiver
 
