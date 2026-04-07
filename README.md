@@ -7,7 +7,7 @@
 
 Modbus RTU firmware for ESP32 4-channel relay boards with RS485.
 
-This project provides a lightweight and reliable Modbus slave implementation for controlling relays and reading digital inputs.
+This project provides a robust Modbus slave implementation with persistent configuration and relay state restore.
 
 ---
 
@@ -27,15 +27,18 @@ Tested on:
 
 * 4x Relay outputs
 * 4x Digital inputs (optoisolated)
-* RS485 Modbus RTU communication
-* Fast response and low latency
-* Compatible with industrial PLCs and SCADA systems
+* RS485 Modbus RTU
+* Relay state persistence (restore after reboot)
+* Configurable Slave ID
+* Configurable Baudrate
+* Configurable boot behavior
+* Factory reset support
 
 ---
 
 ## 🔌 Wiring (RS485)
 
-```
+```text
 ESP32 Board        RS485 Master
 -----------        --------------
 A  (D+)   -------- A
@@ -43,14 +46,9 @@ B  (D-)   -------- B
 GND       -------- GND (recommended)
 ```
 
-⚠️ If communication fails:
-
-* Try swapping A/B lines
-* Ensure common ground between devices
-
 ---
 
-## ⚙️ Modbus Configuration
+## ⚙️ Modbus Configuration (Default)
 
 | Parameter | Value |
 | --------- | ----- |
@@ -100,6 +98,138 @@ Values:
 
 ---
 
+## ⚙️ Configuration Registers
+
+### Holding Registers
+
+| Register | Description   |
+| -------- | ------------- |
+| 100      | Slave ID      |
+| 101      | Baudrate      |
+| 102      | Boot Mode     |
+| 103      | Apply Command |
+
+---
+
+### Input Registers (Diagnostics)
+
+| Register | Description       |
+| -------- | ----------------- |
+| 100      | Current Slave ID  |
+| 101      | Current Baudrate  |
+| 102      | Current Boot Mode |
+| 103      | Firmware Version  |
+
+---
+
+## 🔧 Configuration Values
+
+### Slave ID (`Hreg 100`)
+
+* Range: `1..247`
+
+---
+
+### Baudrate (`Hreg 101`)
+
+| Value | Baudrate |
+| ----- | -------- |
+| 0     | 9600     |
+| 1     | 19200    |
+| 2     | 38400    |
+| 3     | 57600    |
+| 4     | 115200   |
+
+---
+
+### Boot Mode (`Hreg 102`)
+
+| Value | Behavior           |
+| ----- | ------------------ |
+| 0     | Restore last state |
+| 1     | All relays OFF     |
+| 2     | All relays ON      |
+
+---
+
+### Apply Command (`Hreg 103`)
+
+| Value | Action                 |
+| ----- | ---------------------- |
+| 0     | No action              |
+| 1     | Save configuration     |
+| 2     | Save + reboot          |
+| 3     | Factory reset + reboot |
+
+---
+
+## 🔧 Usage Examples
+
+### Turn ON Relay 1
+
+* Write Holding Register `0 = 1`
+
+---
+
+### Change Slave ID
+
+* Write `Hreg 100 = 7`
+* Write `Hreg 103 = 2`
+
+---
+
+### Change Baudrate to 19200
+
+* Write `Hreg 101 = 1`
+* Write `Hreg 103 = 2`
+
+---
+
+### Set Boot Mode (All OFF)
+
+* Write `Hreg 102 = 1`
+* Write `Hreg 103 = 1`
+
+---
+
+### Factory Reset
+
+* Write `Hreg 103 = 3`
+
+---
+
+## 🔄 Restore State
+
+Relay states are automatically saved and restored after reboot.
+
+---
+
+## 🧪 Tested With
+
+* QModMaster
+* Modbus Poll
+* BoneIO Black
+
+---
+
+## 🔌 Integrations
+
+### BoneIO Black (Experimental)
+
+Optional controller configuration:
+
+```text
+integrations/boneio/controller.json
+```
+
+Category:
+
+```text
+Other
+```
+
+---
+
 ## 🔧 Pin Mapping
 
 | Function | GPIO |
@@ -118,105 +248,9 @@ Values:
 
 ---
 
-## 🚀 Installation
-
-1. Install Arduino IDE
-2. Install ESP32 board support
-3. Install required library:
-
-   * `ModbusRTU (modbus-esp8266)`
-4. Upload firmware:
-
-```
-firmware/esp32_relay_x4_modbus.ino
-```
-
----
-
-## 🔧 Usage
-
-### Turn ON Relay 1
-
-* Function: Write Holding Register
-* Address: `0`
-* Value: `1`
-
----
-
-### Turn OFF Relay 1
-
-* Function: Write Holding Register
-* Address: `0`
-* Value: `0`
-
----
-
-### Read Relay State
-
-* Function: Read Input Registers
-* Address: `0`
-
----
-
-### Read Digital Input 1
-
-* Function: Read Input Registers
-* Address: `10`
-
----
-
-## 🧪 Tested With
-
-* QModMaster
-* Modbus Poll
-* Boneio Black
-
----
-
-## 🔌 Integrations
-
-### BoneIO Black (Experimental)
-
-This repository includes an optional controller configuration for BoneIO Black.
-
-⚠️ Notes:
-
-* Not officially supported yet
-* Pending upstream PR
-* May change in future
-
-Location:
-
-```
-integrations/boneio/controller.json
-```
-
-Category:
-
-```
-Other
-```
-
-Supported:
-
-* Relay control
-* Relay state feedback
-* Digital inputs
-
----
-
-## ⚠️ Important Notes
-
-* Relays are **active LOW**
-* Inputs are **active LOW**
-* RS485 requires correct DE control (GPIO32)
-* GPIO13 (Relay 4) may behave differently at boot
-
----
-
 ## 📦 Project Structure
 
-```
+```text
 .
 ├── firmware/
 │   └── esp32_relay_x4_modbus.ino
@@ -226,7 +260,17 @@ Supported:
 ├── docs/
 │   └── board.jpg
 ├── README.md
+└── LICENSE
 ```
+
+---
+
+## ⚠️ Notes
+
+* Relays are **active LOW**
+* Inputs are **active LOW**
+* GPIO13 may toggle at boot
+* RS485 requires DE control (GPIO32)
 
 ---
 
@@ -235,9 +279,9 @@ Supported:
 * [x] Modbus RTU firmware
 * [x] Relay control
 * [x] Input reading
+* [x] Restore state
+* [x] Configurable parameters
 * [ ] BoneIO official integration
-* [ ] Configurable slave ID
-* [ ] Configurable baudrate
 * [ ] MQTT bridge
 
 ---
@@ -245,10 +289,6 @@ Supported:
 ## 🤝 Contributing
 
 Contributions are welcome!
-
-* Open an issue
-* Submit a pull request
-* Suggest improvements
 
 ---
 
