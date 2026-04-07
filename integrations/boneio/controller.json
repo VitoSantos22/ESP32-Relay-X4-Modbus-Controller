@@ -1,0 +1,168 @@
+{
+  "model": "ESP32 Relay X4 Modbus",
+  "registers_base": [
+    {
+      "base": 0,
+      "length": 4,
+      "register_type": "holding",
+      "registers": [
+        {
+          "name": "Relay_1_Command",
+          "address": 0,
+          "entity_type": "writeable_binary_sensor_discrete",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Relay_2_Command",
+          "address": 1,
+          "entity_type": "writeable_binary_sensor_discrete",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Relay_3_Command",
+          "address": 2,
+          "entity_type": "writeable_binary_sensor_discrete",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Relay_4_Command",
+          "address": 3,
+          "entity_type": "writeable_binary_sensor_discrete",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        }
+      ]
+    },
+    {
+      "base": 0,
+      "length": 4,
+      "register_type": "input",
+      "registers": [
+        {
+          "name": "Relay_1_State",
+          "address": 0,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Relay_2_State",
+          "address": 1,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Relay_3_State",
+          "address": 2,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Relay_4_State",
+          "address": 3,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        }
+      ]
+    },
+    {
+      "base": 10,
+      "length": 4,
+      "register_type": "input",
+      "registers": [
+        {
+          "name": "Input_1",
+          "address": 10,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Input_2",
+          "address": 11,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Input_3",
+          "address": 12,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        },
+        {
+          "name": "Input_4",
+          "address": 13,
+          "entity_type": "binary_sensor",
+          "value_type": "U_WORD",
+          "payload_on": "1",
+          "payload_off": "0"
+        }
+      ]
+    }
+  ],
+  "additional_entities": [
+    {
+      "name": "Relay_1",
+      "source": "relay_1_command",
+      "entity_type": "switch",
+      "x_mapping": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "payload_off": "OFF",
+      "payload_on": "ON"
+    },
+    {
+      "name": "Relay_2",
+      "source": "relay_2_command",
+      "entity_type": "switch",
+      "x_mapping": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "payload_off": "OFF",
+      "payload_on": "ON"
+    },
+    {
+      "name": "Relay_3",
+      "source": "relay_3_command",
+      "entity_type": "switch",
+      "x_mapping": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "payload_off": "OFF",
+      "payload_on": "ON"
+    },
+    {
+      "name": "Relay_4",
+      "source": "relay_4_command",
+      "entity_type": "switch",
+      "x_mapping": {
+        "0": "OFF",
+        "1": "ON"
+      },
+      "payload_off": "OFF",
+      "payload_on": "ON"
+    }
+  ]
+}
